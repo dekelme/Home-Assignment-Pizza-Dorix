@@ -1,18 +1,26 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Req } from '@nestjs/common';
 import { AppService } from './app.service';
-import {Order} from './app.service'
+import {Request } from 'express';
+import DoughHandler from './dough';
+import {ToppingsHandler} from './topping';
+import {OvenHandler} from './oven'
+import {WaiterHandler} from './waiter'
+
+new ToppingsHandler();
+new OvenHandler();
+new WaiterHandler();
+
 @Controller('pizza')
-export class PizzasController {
-  constructor(private readonly appService: AppService) {}
-
-  @Get()
-  getOrder():  Array<Order> {
-    return this.appService.getOrder();
+export class PizzasController extends DoughHandler {
+  constructor(private readonly appService: AppService) {
+    super();
   }
-//TODO adding more routs to create more pipelines
+
   @Post()
-  create(): string {
-    return 'This action adds a new pizza';
+  receiveOrders(@Req() req : Request) {
+     console.log(req.body)
+      this.receiveNewOrders(req.body);
+    return "Orders have been registered";
   }
-
+  
 }
